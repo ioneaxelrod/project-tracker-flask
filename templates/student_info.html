@@ -7,5 +7,14 @@
   <h1>{{ first }} {{ last }}</h1>
 
   <p>GitHub Account: {{ github }}</p>
+
+{% if rows %}
+  <h2>GRADES</h2>
+<ul>
+  {% for title, grade in rows %}
+  	<li><a href="/project?title={{ title }}">{{ title }}: {{ grade }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
 </body>
 </html>

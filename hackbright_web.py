@@ -12,9 +12,10 @@ def get_student():
     """Show information about a student."""
     github = request.args.get('github')
     first, last, github = hackbright.get_student_by_github(github)
+    rows = hackbright.get_grades_by_github(github)
 
     return render_template('student_info.html',
-                           first=first, last=last, github=github)
+                           first=first, last=last, github=github, rows=rows)
 
 
 @app.route("/student-search")
@@ -41,6 +42,22 @@ def student_add():
 
     return render_template('student_info.html',
                            first=first_name, last=last_name, github=github)
+
+
+@app.route("/project")
+def get_project():
+    title = request.args.get("title")
+    project = hackbright.get_project_by_title(title)
+    project_grades = hackbright.get_grades_by_title(title)
+    return render_template("project_info.html", project=project,
+                           project_grades=project_grades)
+
+
+@app.route("/")
+def get_homepage():
+    students = hackbright.get_all_students()
+    projects = hackbright.get_all_projects()
+    return render_template("homepage.html", students=students, projects=projects)
 
 
 if __name__ == "__main__":
