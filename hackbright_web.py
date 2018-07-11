@@ -1,6 +1,6 @@
 """A web application for tracking projects, students, and student grades."""
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 
 import hackbright
 
@@ -44,6 +44,26 @@ def student_add():
                            first=first_name, last=last_name, github=github)
 
 
+@app.route("/project-add")
+def get_new_project_form():
+    """Show form for searching for a student."""
+
+    return render_template("project_add.html")
+
+
+@app.route("/project-add", methods=['POST'])
+def project_add():
+    title = request.form.get("title")
+    description = request.form.get("description")
+    max_grade = request.form.get("max_grade")
+
+    hackbright.add_project(title, description, max_grade)
+    project = (title, description, max_grade)
+
+    return render_template('project_info.html',
+                           project=project)
+
+
 @app.route("/project")
 def get_project():
     title = request.args.get("title")
@@ -53,11 +73,34 @@ def get_project():
                            project_grades=project_grades)
 
 
+@app.route("/assign-grade")
+def get_grade_form():
+    students = hackbright.get_all_students()
+    projects = hackbright.get_all_projects()
+    return render_template("assign_grade.html",
+                           students=students, projects=projects)
+
+
+@app.route("/assign-grade", methods=['POST'])
+def assign_grade():
+    github = request.form.get("github")
+    project_title = request.form.get("title")
+    grade = request.form.get("grade")
+
+    if not (hackbright.get_grade_by_github_title(github, project_title)):
+        hackbright.assign_grade(github, project_title, grade)
+        return redirect('/')
+    else:
+        hackbright.update_grade(github, project_title, grade)
+        return redirect('/')
+
+
 @app.route("/")
 def get_homepage():
     students = hackbright.get_all_students()
     projects = hackbright.get_all_projects()
-    return render_template("homepage.html", students=students, projects=projects)
+    return render_template("homepage.html",
+                           students=students, projects=projects)
 
 
 if __name__ == "__main__":

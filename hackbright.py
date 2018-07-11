@@ -58,6 +58,21 @@ def make_new_student(first_name, last_name, github):
     print(f"Successfully added student: {first_name} {last_name}")
 
 
+def add_project(title, description, max_grade):
+    QUERY = """
+        INSERT INTO projects (title, description, max_grade)
+            VALUES (:title, :description, :max_grade)
+            """
+
+    db_cursor = db.session.execute(QUERY, {'title': title,
+                                           'description': description,
+                                           'max_grade': max_grade})
+
+    db.session.commit()
+
+    print("Successfully added project: {} {} {}".format(title, description, max_grade))
+
+
 def get_project_by_title(title):
     """Given a project title, print information about the project."""
 
@@ -90,7 +105,7 @@ def get_grade_by_github_title(github, title):
 
     row = db_cursor.fetchone()
 
-    print(f"Student {github} in project {title} received grade of {row[0]}")
+    # print(f"Student {github} in project {title} received grade of {row[0]}")
 
     return row
 
@@ -106,10 +121,23 @@ def assign_grade(github, title, grade):
     db_cursor = db.session.execute(QUERY, {'github': github,
                                            'title': title,
                                            'grade': grade})
-
     db.session.commit()
 
     print(f"Successfully assigned grade of {grade} for {github} in {title}")
+
+
+def update_grade(github, title, grade):
+
+    QUERY = """
+        UPDATE grades
+        SET grade = :grade
+        WHERE project_title = :title AND student_github = :github
+        """
+
+    db_cursor = db.session.execute(QUERY, {'github': github,
+                                           'title': title,
+                                           'grade': grade})
+    db.session.commit()
 
 
 def get_grades_by_github(github):

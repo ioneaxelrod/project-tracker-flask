@@ -1,22 +1,19 @@
-<!doctype html>
-<html>
-<head>
-    <title>Project Info</title>
-</head>
-<body>
-  <h1>{{ project[0] }}</h1>
+{% extends 'base.html' %}
 
+{% block header%}Project Info{% endblock %}
+
+{% block page_title %}{{ project[0] }}{% endblock %}
+
+{% block content %}
   <p>Description: {{ project[1] }}</p>
   <p>Highest Grade: {{ project[2] }}</p>
 
 {% if project_grades %}
   <h2>GRADES</h2>
-<ul>
-  {% for student_github, grade in project_grades %}
-  	<li><a href="/student?github={{ student_github }}">{{ student_github }}: {{ grade }}</a></li>
-  {% endfor %}
-</ul>
+	<ul>
+  		{% for student_github, grade in project_grades %}
+  			<li><a href="/student?github={{ student_github }}">{{ student_github }}: {{ grade }}</a></li>
+  		{% endfor %}
+	</ul>
 {% endif %}
-
-</body>
-</html>
+{% endblock %}

@@ -1,11 +1,10 @@
-<!doctype html>
-<html>
-<head>
-    <title>!!!!!HOMEPAGE!!!!!</title>
-</head>
-<body>
-  <h1>HOMEPAGE</h1>
+{% extends 'base.html' %}
 
+{% block header%}!!!!!HOMEPAGE!!!!!{% endblock %}
+
+{% block page_title %}HOMEPAGE{% endblock %}
+
+{% block content %}
 <h2>STUDENTS</h2>
 <ul>
   {% for github in students %}
@@ -20,6 +19,4 @@
   {% endfor %}
 </ul>
 
-
-</body>
-</html>
+{% endblock %}
